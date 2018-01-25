@@ -11,7 +11,8 @@ class Home extends Component {
     articles: [],
     title: "",
     url: "",
-    date: ""
+    date: "",
+    limit: ""
   };
 
   componentDidMount() {
@@ -23,6 +24,7 @@ class Home extends Component {
     // loop through the articles and display the limited number
     // articles.map( article => console.log(article))
       // console.log(articles[i]);
+    this.setState({ articles: articles, limit: limit})
     }
 
   deleteArticle = id => {
@@ -71,6 +73,7 @@ class Home extends Component {
       if (parseInt(end_year)) {
         searchURL = `${searchURL}&end_date=${end_year}0101`;
       }
+      //"document_type": "article",
       console.log(searchURL);
 
       // API.saveArticle({
@@ -82,7 +85,44 @@ class Home extends Component {
       //   .catch(err => console.log(err));
 
         API.getArticles(`${searchURL}.json`)
-          .then(res => this.loadArticles(res.data.response.docs, limit))
+          .then(res => {
+            // store response
+            const responseArray = res.data.response.docs;
+            let articlesArray = [];
+            // build an array with the res.data.response.docs
+            for (let i = 0; i < responseArray.length; i++ ){
+              // if the response is an article
+              if (responseArray[i].document_type === "article") {
+                console.log(responseArray[i].headline.main);
+                console.log(responseArray[i].web_url);
+                console.log(responseArray[i].pub_date);
+                articlesArray.push(
+                  responseArray[i].headline.main
+                // {
+                //   title: responseArray[i].headline.main,
+                //   url: responseArray[i].web_url,
+                //   date: responseArray[i].pub_date
+                // }
+                );
+              };
+            };
+
+            console.log(articlesArray);
+
+            this.setState({ 
+              articles: articlesArray, 
+              title: "", 
+              author: "", 
+              synopsis: "", 
+              limit: this.state.limit
+            });
+            // console.log(res.data);
+            // console.log(`${res.data.response.docs[1].headline.main}
+            // ${res.data.response.docs[0].web_url}
+            // ${res.data.response.docs[0].pub_date}
+            // `);
+          // this.loadArticles(res.data.response.docs, limit)
+          })
           .catch(err => console.log(err));
     }
   };
@@ -138,21 +178,9 @@ class Home extends Component {
             <CardWrapper>
               <CardHeader>Results</CardHeader>
               <CardBody>
-                {this.state.articles.length ? (
-                  <List>
-                    {this.state.articles.map(article => (
-                      <ListItem key={article._id}>
-                        <Link to={"/article/" + article._id}>
-                          <strong>
-                            {article.title} 
-                          </strong>
-                        </Link>
-                      </ListItem>
-                    ))}
-                  </List>
-                ) : (
-                  <h3>No Results to Display</h3>
-                )}
+                <List>
+                {this.state.articles}
+                </List>
               </CardBody>
             </CardWrapper>
           </Col>
