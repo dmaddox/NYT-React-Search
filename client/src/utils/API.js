@@ -2,8 +2,9 @@ import axios from "axios";
 
 export default {
   // Gets all articles
-  getArticles: function() {
-    return axios.get("/api/articles");
+  getArticles: function(queryURL) {
+  //queries NYT
+    return axios.get(queryURL);
   },
   // Gets the article with the given id
   getArticle: function(id) {
@@ -18,3 +19,4 @@ export default {
     return axios.post("/api/articles", bookData);
   }
 };
+
