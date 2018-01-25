@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { List, ListItem } from "../../components/List";
 import { Input, FormBtn } from "../../components/Form";
+import SaveBtn from "../../components/SaveBtn";
 
 class Home extends Component {
   state = {
@@ -18,21 +19,23 @@ class Home extends Component {
     search_term: ""
   };
 
-  componentDidMount() {
-    this.loadArticles();
-  }
+  // componentDidMount() {
+  //   this.loadArticles();
+  // }
 
-  loadArticles = (articles, limit = 10) => {
-    console.log(`loadArticles is runnning...${articles}`);
-    // loop through the articles and display the limited number
-    // articles.map( article => console.log(article))
-      // console.log(articles[i]);
-    // this.setState({ articles: articles, limit: limit})
-    }
+  // loadArticles = (articles, limit = 10) => {
+  //   console.log(`loadArticles is runnning...${articles}`);
+  //   // loop through the articles and display the limited number
+  //   // articles.map( article => console.log(article))
+  //     // console.log(articles[i]);
+  //   // this.setState({ articles: articles, limit: limit})
+  //   }
 
-  deleteArticle = id => {
-    API.deleteArticle(id)
-      .then(res => this.loadArticles())
+  saveArticle = articleData => {
+    console.log("Saving Article...");
+    console.log(articleData);
+    API.saveArticle(articleData)
+      .then(res => console.log(`success`))
       .catch(err => console.log(err));
   };
 
@@ -81,7 +84,6 @@ class Home extends Component {
         API.getArticles(`${searchURL}.json`)
           .then(res => {
             // store response
-            console.log(res);
             const responseArray = res.data.response.docs;
             // setup an empty array that will be used for setState.articles
             let articlesArray = [];
@@ -96,6 +98,7 @@ class Home extends Component {
                 articlesArray.push(
                   // responseArray[i].headline.main
                 {
+                  id: i,
                   title: responseArray[i].headline.main,
                   url: responseArray[i].web_url,
                   date: pub_date
@@ -173,13 +176,14 @@ class Home extends Component {
               {this.state.articles.length ? (
                 <List>
                   {this.state.articles.map(article => (
-                    <ListItem key={article.url}>
+                    <ListItem key={article.id}>
                         <strong><a href={article.url} target="_blank">
                           {article.title}
                           </a>
                         </strong>
                         <br />
                         Published: {article.date}
+                        <SaveBtn onClick={() => this.saveArticle({title: article.title, url: article.url, date: article.date})} />
                     </ListItem>
                   ))}
                 </List>
