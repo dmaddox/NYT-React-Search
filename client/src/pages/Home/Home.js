@@ -12,7 +12,10 @@ class Home extends Component {
     title: "",
     url: "",
     date: "",
-    limit: ""
+    limit: "",
+    start_year: "",
+    end_year: "",
+    search_term: ""
   };
 
   componentDidMount() {
@@ -20,11 +23,11 @@ class Home extends Component {
   }
 
   loadArticles = (articles, limit = 10) => {
-    console.log(articles);
+    console.log(`loadArticles is runnning...${articles}`);
     // loop through the articles and display the limited number
     // articles.map( article => console.log(article))
       // console.log(articles[i]);
-    this.setState({ articles: articles, limit: limit})
+    // this.setState({ articles: articles, limit: limit})
     }
 
   deleteArticle = id => {
@@ -73,55 +76,44 @@ class Home extends Component {
       if (parseInt(end_year)) {
         searchURL = `${searchURL}&end_date=${end_year}0101`;
       }
-      //"document_type": "article",
-      console.log(searchURL);
 
-      // API.saveArticle({
-      //   title: this.state.title,
-      //   url: this.state.url,
-      //   date: this.state.date
-      // })
-      //   .then(res => this.loadArticles())
-      //   .catch(err => console.log(err));
-
+      // after submit, call NYT API
         API.getArticles(`${searchURL}.json`)
           .then(res => {
             // store response
+            console.log(res);
             const responseArray = res.data.response.docs;
+            // setup an empty array that will be used for setState.articles
             let articlesArray = [];
             // build an array with the res.data.response.docs
             for (let i = 0; i < responseArray.length; i++ ){
               // if the response is an article
               if (responseArray[i].document_type === "article") {
-                console.log(responseArray[i].headline.main);
-                console.log(responseArray[i].web_url);
-                console.log(responseArray[i].pub_date);
+                // remove the extraneous data from pub_date data
+                let pub_date = responseArray[i].pub_date.replace('T00:00:00Z','')
+
+                // push each piece of article data to an array
                 articlesArray.push(
-                  responseArray[i].headline.main
-                // {
-                //   title: responseArray[i].headline.main,
-                //   url: responseArray[i].web_url,
-                //   date: responseArray[i].pub_date
-                // }
+                  // responseArray[i].headline.main
+                {
+                  title: responseArray[i].headline.main,
+                  url: responseArray[i].web_url,
+                  date: pub_date
+                }
                 );
               };
             };
-
-            console.log(articlesArray);
-
+            // setState with the retreived article information
             this.setState({ 
               articles: articlesArray, 
               title: "", 
-              author: "", 
-              synopsis: "", 
-              limit: this.state.limit
+              url: "", 
+              date: "", 
+              limit: this.state.limit,
+              start_year: "",
+              end_year: "",
+              search_term: ""
             });
-            // console.log(res.data);
-            // console.log(`${res.data.response.docs[1].headline.main}
-            // ${res.data.response.docs[0].web_url}
-            // ${res.data.response.docs[0].pub_date}
-            // `);
-          // this.loadArticles(res.data.response.docs, limit)
           })
           .catch(err => console.log(err));
     }
@@ -178,9 +170,22 @@ class Home extends Component {
             <CardWrapper>
               <CardHeader>Results</CardHeader>
               <CardBody>
+              {this.state.articles.length ? (
                 <List>
-                {this.state.articles}
+                  {this.state.articles.map(article => (
+                    <ListItem key={article.url}>
+                        <strong><a href={article.url} target="_blank">
+                          {article.title}
+                          </a>
+                        </strong>
+                        <br />
+                        Published: {article.date}
+                    </ListItem>
+                  ))}
                 </List>
+                ) : (
+                  <h3>No Results to Display</h3>
+                )}
               </CardBody>
             </CardWrapper>
           </Col>
