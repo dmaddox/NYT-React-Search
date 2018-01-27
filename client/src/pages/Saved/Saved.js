@@ -60,7 +60,7 @@ class Saved extends Component {
               ))}
             </List>
           ) : (
-            <h3>No Results to Display</h3>
+            `No saved articles. Click 'Search' in the navbar to search for New York Times articles.`
           )}
         
               </CardBody>

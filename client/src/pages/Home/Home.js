@@ -19,18 +19,6 @@ class Home extends Component {
     search_term: ""
   };
 
-  // componentDidMount() {
-  //   this.loadArticles();
-  // }
-
-  // loadArticles = (articles, limit = 10) => {
-  //   console.log(`loadArticles is runnning...${articles}`);
-  //   // loop through the articles and display the limited number
-  //   // articles.map( article => console.log(article))
-  //     // console.log(articles[i]);
-  //   // this.setState({ articles: articles, limit: limit})
-  //   }
-
   saveArticle = articleData => {
     console.log("Saving Article...");
     console.log(articleData);
@@ -188,7 +176,7 @@ class Home extends Component {
                   ))}
                 </List>
                 ) : (
-                  <h3>No Results to Display</h3>
+                  `No results, yet. Use above search to look for New York Times articles.`
                 )}
               </CardBody>
             </CardWrapper>

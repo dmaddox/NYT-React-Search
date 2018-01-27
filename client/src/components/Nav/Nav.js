@@ -3,13 +3,13 @@ import "./Nav.css";
 
 const Nav = () =>
   
-  <div className="container-fluid">
+  <div className="container-fluid px-0">
   
-  <nav className="navbar navbar-expand-lg navbar-light bg-light">
-    <div className="col-lg-10">
+  <nav className="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <div className="col-10">
       <a className="nav-item" href="/">New York Times Search</a>
     </div>
-    <div className="col-lg-2">
+    <div className="col-2">
 
           <button className="navbar-toggler" type="button">
             <span className="navbar-toggler-icon"></span>
