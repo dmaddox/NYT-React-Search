@@ -163,7 +163,7 @@ class Home extends Component {
               <CardBody>
               {this.state.articles.length ? (
                 <List>
-                  {this.state.articles.map(article => (
+                  {this.state.articles.slice(0, this.state.limit).map(article => (
                     <ListItem key={article.id}>
                         <strong><a href={article.url} target="_blank">
                           {article.title}
